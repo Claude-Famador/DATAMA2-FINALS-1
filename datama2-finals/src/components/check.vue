@@ -1,8 +1,9 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { supabase } from '../lib/supabaseClient'
+import { supabase } from '../lib/supabaseClient';
 
 const appointments = ref([]);
+const dentists = ref([]);
 const userType = ref('customer');
 const loading = ref(false);
 const newAppointment = ref({ 
@@ -32,9 +33,22 @@ const fetchAppointments = async () => {
   loading.value = false;
 };
 
+const fetchDentists = async () => {
+  const { data, error } = await supabase
+    .from('DENTIST')
+    .select('*');
+
+  if (!error) {
+    dentists.value = data;
+  } else {
+    alert('Could not load dentists');
+  }
+};
+
 const bookAppointment = async () => {
+  console.log('Booking appointment with data:', newAppointment.value); // Log the data
   if (!validateAppointment()) return;
-  
+
   loading.value = true;
   const { error } = await supabase
     .from('APPOINTMENT')
@@ -49,6 +63,7 @@ const bookAppointment = async () => {
     clearForm();
     fetchAppointments();
   } else {
+    console.error('Error booking appointment:', error); // Log the error
     alert('Failed to book appointment');
   }
   loading.value = false;
@@ -93,7 +108,10 @@ const updateStatus = async (id, status) => {
   loading.value = false;
 };
 
-onMounted(fetchAppointments);
+onMounted(() => {
+  fetchAppointments();
+  fetchDentists();
+});
 </script>
 
 <template>
