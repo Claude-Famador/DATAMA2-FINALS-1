@@ -132,64 +132,6 @@ onMounted(fetchAppointments);
           {{ loading ? 'Booking...' : 'Book' }}
         </button>
       </div>
-
-      <div v-if="userType === 'staff'" class="border p-4 mt-4 bg-white rounded-lg shadow">
-        <h2 class="text-xl font-semibold mb-2">Manage Appointments</h2>
-        <div class="mb-4">
-          <select v-model="filterStatus" class="border p-2 mr-2">
-            <option value="">All Status</option>
-            <option value="Pending">Pending</option>
-            <option value="Confirmed">Confirmed</option>
-            <option value="Cancelled">Cancelled</option>
-          </select>
-          <input type="date" v-model="filterDate" class="border p-2" />
-        </div>
-        <table class="w-full border-collapse">
-          <thead>
-            <tr class="bg-gray-200">
-              <th class="p-2">Date</th>
-              <th class="p-2">Time</th>
-              <th class="p-2">Client</th>
-              <th class="p-2">Dentist</th>
-              <th class="p-2">Type</th>
-              <th class="p-2">Status</th>
-              <th class="p-2">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="appt in filteredAppointments" :key="appt.APPT_ID" class="border-b">
-              <td class="p-2">{{ formatDate(appt.APPT_Date) }}</td>
-              <td class="p-2">{{ formatTime(appt.APPT_Date) }}</td>
-              <td class="p-2">{{ appt.CLIENT?.CLIENT_Name || appt.APPT_Client_Name }}</td>
-              <td class="p-2">{{ appt.DENTIST?.DENTIST_Name || appt.APPT_Dentist_Name }}</td>
-              <td class="p-2">{{ appt.APPT_Type }}</td>
-              <td class="p-2">
-                <span :class="getStatusClass(appt.APPT_Status)">
-                  {{ appt.APPT_Status }}
-                </span>
-              </td>
-              <td class="p-2 space-x-2">
-                <button 
-                  v-if="appt.APPT_Status === 'Pending'"
-                  @click="updateStatus(appt.APPT_ID, 'Confirmed')" 
-                  class="bg-green-500 text-white p-1 rounded"
-                  :disabled="loading"
-                >
-                  {{ loading ? '...' : 'Confirm' }}
-                </button>
-                <button 
-                  v-if="appt.APPT_Status === 'Pending'"
-                  @click="updateStatus(appt.APPT_ID, 'Cancelled')" 
-                  class="bg-red-500 text-white p-1 rounded"
-                  :disabled="loading"
-                >
-                  Cancel
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
     </div>
   </div>
 </template>
@@ -221,23 +163,6 @@ onMounted(fetchAppointments);
   font-weight: 600;
 }
 
-.dashboard-header select {
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  border: 1px solid #e2e8f0;
-  background-color: white;
-  cursor: pointer;
-}
-
-input {
-  border: 1px solid #e2e8f0;
-  border-radius: 4px;
-  padding: 0.75rem;
-  margin-bottom: 1rem;
-  width: 100%;
-  font-size: 1rem;
-}
-
 button {
   background-color: #3b82f6;
   color: white;
@@ -253,31 +178,4 @@ button:hover {
   background-color: #2563eb;
   transform: translateY(-1px);
 }
-
-.border {
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
 </style>
-button {
-  background-color: #3b82f6;
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 4px;
-  border: none;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
-
-button:hover {
-  background-color: #2563eb;
-  transform: translateY(-1px);
-}
-
-.border {
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-</style>
-```
