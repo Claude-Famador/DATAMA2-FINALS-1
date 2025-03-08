@@ -18,16 +18,13 @@ const fetchAppointments = async () => {
   loading.value = true;
   const { data, error } = await supabase
     .from('APPOINTMENT')
-    .select(`
-      *,
-      DENTIST (DENTIST_Name),
-      CLIENT (CLIENT_Name)
-    `)
+    .select('*')
     .order('APPT_Date', { ascending: true });
-    
+
   if (!error) {
     appointments.value = data;
   } else {
+    console.error('Error fetching appointments:', error);
     alert('Could not load appointments');
   }
   loading.value = false;
@@ -41,12 +38,13 @@ const fetchDentists = async () => {
   if (!error) {
     dentists.value = data;
   } else {
+    console.error('Error fetching dentists:', error);
     alert('Could not load dentists');
   }
 };
 
 const bookAppointment = async () => {
-  console.log('Booking appointment with data:', newAppointment.value); // Log the data
+  console.log('Booking appointment with data:', newAppointment.value);
   if (!validateAppointment()) return;
 
   loading.value = true;
@@ -63,7 +61,7 @@ const bookAppointment = async () => {
     clearForm();
     fetchAppointments();
   } else {
-    console.error('Error booking appointment:', error); // Log the error
+    console.error('Error booking appointment:', error);
     alert('Failed to book appointment');
   }
   loading.value = false;
@@ -72,7 +70,7 @@ const bookAppointment = async () => {
 const validateAppointment = () => {
   const required = ['APPT_Date', 'APPT_Client_Name', 'APPT_Dentist_Name', 'APPT_Type'];
   const missing = required.filter(field => !newAppointment.value[field]);
-  
+
   if (missing.length > 0) {
     alert('Please fill in all required fields');
     return false;
@@ -98,11 +96,12 @@ const updateStatus = async (id, status) => {
       APPT_Status: status,
       UPDATED_Date: new Date().toISOString()
     })
-    .match({ APPT_ID: id });
+    .eq('APPT_ID', id);
 
   if (!error) {
     fetchAppointments();
   } else {
+    console.error('Error updating status:', error);
     alert('Failed to update appointment status');
   }
   loading.value = false;
@@ -113,7 +112,6 @@ onMounted(() => {
   fetchDentists();
 });
 </script>
-
 <template>
   <div class="dashboard">
     <div class="dashboard-container">
