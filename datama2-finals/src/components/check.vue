@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue';
 import { supabase } from '../lib/supabaseClient'
 
 const appointments = ref([]);
+const dentists = ref([]);
 const userType = ref('customer');
 const loading = ref(false);
 const newAppointment = ref({ 
@@ -30,6 +31,18 @@ const fetchAppointments = async () => {
     alert('Could not load appointments');
   }
   loading.value = false;
+};
+
+const fetchDentists = async () => {
+  const { data, error } = await supabase
+    .from('DENTIST')
+    .select('DENTIST_ID, DENTIST_Name');
+
+  if (!error) {
+    dentists.value = data;
+  } else {
+    alert('Could not load dentists');
+  }
 };
 
 const bookAppointment = async () => {
@@ -93,7 +106,10 @@ const updateStatus = async (id, status) => {
   loading.value = false;
 };
 
-onMounted(fetchAppointments);
+onMounted(async () => {
+  await fetchAppointments();
+  await fetchDentists();
+});
 </script>
 
 <template>
